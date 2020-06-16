@@ -17,7 +17,8 @@ def bike_prediction():
                                return_train_score=True,
                                refit='RMSLE',
                                cv=10,
-                               n_jobs=-1)
+                               n_jobs=-1,
+                               verbose=1)
 
     best_regressor = grid_search.fit(df_train, y_train)
 
