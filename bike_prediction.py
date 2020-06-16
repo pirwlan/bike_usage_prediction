@@ -1,3 +1,4 @@
+
 from sklearn.model_selection import GridSearchCV
 
 import feature_engineering as fe
@@ -8,7 +9,6 @@ def bike_prediction():
 
     df_train, y_train, df_test = h.get_data()
     rgr_pipe = fe.rgr_pipe()
-
     param_grid = fe.grid_parameters()
 
     grid_search = GridSearchCV(estimator=rgr_pipe,

@@ -1,5 +1,16 @@
+import numpy as np
 import os
 import pandas as pd
+
+
+def date_transforms(dfs: list):
+    new_dfs = []
+    for df in dfs:
+
+        df['day'] = df['datetime'].dt.dayofweek
+        df['hour'] = df['datetime'].dt.hour
+        new_dfs.append(df)
+    return new_dfs
 
 
 def get_data():
@@ -15,7 +26,11 @@ def get_data():
     df_test = pd.read_csv(os.path.join(data_path, 'test.csv'),
                           parse_dates=['datetime'])
 
-    return df_train, y_train['count'], df_test
+    df_train, df_test = date_transforms([df_train, df_test])
+
+    #y_train = np.log1p(y_train['count'])
+    y_train = y_train['count']
+    return df_train, y_train, df_test
 
 
 def evaluate_summary(model):
@@ -45,5 +60,6 @@ def create_submission(best_model, df_test):
     verify_folder_existence(submit_path)
 
     y_hat = best_model.predict(df_test)
-    df_submit = pd.DataFrame(y_hat, columns=['counts'], index=df_test.index)
-    df_submit.to_csv(os.path.join(submit_path, 'submission.csv'))
+    df_submit = pd.read_csv(os.path.join(os.getcwd(), 'data', 'sampleSubmission.csv'))
+    df_submit['count'] = y_hat
+    df_submit.to_csv(os.path.join(submit_path, 'submission.csv'), index=0)
