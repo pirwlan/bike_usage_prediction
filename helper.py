@@ -58,12 +58,17 @@ def verify_folder_existence(path):
         pass
 
 
-def create_submission(best_model, df_test):
+def create_submission(casual_model, reg_model, df_test):
     submit_path = os.path.join(os.getcwd(), 'submission')
     verify_folder_existence(submit_path)
 
-    y_hat = best_model.predict(df_test)
+    y_hat_casual = casual_model.predict(df_test)
+    y_hat_reg = reg_model.predict(df_test)
+
     df_submit = pd.read_csv(os.path.join(os.getcwd(), 'data', 'sampleSubmission.csv'))
-    y_hat = np.expm1(y_hat)
+
+    y_hat_casual = np.expm1(y_hat_casual)
+    y_hat_reg = np.expm1(y_hat_reg)
+    y_hat = y_hat_casual + y_hat_reg
     df_submit['count'] = y_hat
     df_submit.to_csv(os.path.join(submit_path, 'submission.csv'), index=0)

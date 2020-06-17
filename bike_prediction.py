@@ -1,4 +1,3 @@
-
 from sklearn.model_selection import GridSearchCV
 
 import feature_engineering as fe
@@ -9,21 +8,34 @@ def bike_prediction():
 
     df_train, y_train, df_test = h.get_data()
     rgr_pipe = fe.rgr_pipe()
+
     param_grid = fe.grid_parameters()
 
-    grid_search = GridSearchCV(estimator=rgr_pipe,
-                               param_grid=param_grid,
-                               scoring=fe.my_scorer(),
-                               return_train_score=True,
-                               refit='RMSLE',
-                               cv=10,
-                               n_jobs=-1,
-                               verbose=1)
+    grid_search_casual = GridSearchCV(estimator=rgr_pipe,
+                                      param_grid=param_grid,
+                                      scoring=fe.my_scorer(),
+                                      return_train_score=True,
+                                      refit='RMSLE',
+                                      cv=10,
+                                      n_jobs=-1,
+                                      verbose=1)
 
-    best_regressor = grid_search.fit(df_train, y_train)
+    best_regressor_casual = grid_search_casual.fit(df_train, y_train['casual'])
+    h.evaluate_summary(best_regressor_casual)
 
-    h.evaluate_summary(best_regressor)
-    h.create_submission(best_regressor, df_test)
+    grid_search_reg = GridSearchCV(estimator=rgr_pipe,
+                                   param_grid=param_grid,
+                                   scoring=fe.my_scorer(),
+                                   return_train_score=True,
+                                   refit='RMSLE',
+                                   cv=10,
+                                   n_jobs=-1,
+                                   verbose=1)
+
+    best_regressor_reg = grid_search_reg.fit(df_train, y_train['registered'])
+
+    h.evaluate_summary(best_regressor_reg)
+    h.create_submission(best_regressor_casual, best_regressor_reg, df_test)
 
 
 if __name__ == '__main__':
