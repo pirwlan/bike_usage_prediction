@@ -283,7 +283,6 @@ crashlytics-build.properties
 fabric.properties
 
 # bigdata stuff
-data/day.csv
-data/hour.csv
-data/Readme.txt
+data_big/
+data_big/*
 BigData.ipynb

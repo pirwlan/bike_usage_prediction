@@ -1,8 +1,8 @@
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import PoissonRegressor
 from sklearn.metrics import make_scorer, mean_squared_log_error
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, KBinsDiscretizer, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures, StandardScaler
 
 import numpy as np
 
@@ -90,14 +90,16 @@ def setup_col_transformer():
 
 def rgr_pipe():
     col_trans = setup_col_transformer()
-    ranfor_reg = RandomForestRegressor()
+    ranfor_reg = PoissonRegressor()
     return Pipeline([('feature_engineering', col_trans),
+                     ('polynominal', PolynomialFeatures()),
                      ('ranfor_regression', ranfor_reg)])
 
 
 def grid_parameters():
 
-    return {'ranfor_regression__n_estimators': [400],
+    return {'ranfor_regression__alpha': np.arange(0, 4),
+            'ranfor_regression__max_iter': [200, 400],
             #'ranfor_regression__max_features': np.arange(5, 10),
             #'ranfor_regression__min_samples_split': [5],
             #'ranfor_regression__max_depth': [10],
