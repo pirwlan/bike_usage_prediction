@@ -21,14 +21,39 @@ def weather_pipeline():
 
 def temp_pipeline():
     return Pipeline([('temp_scaler', StandardScaler())])
-
                       #KBinsDiscretizer(encode='onehot',
                       #                                     strategy='uniform'))])
+
+
+def atemp_pipeline():
+    return Pipeline([('atemp_scaler', StandardScaler())])
 
 
 def hour_pipeline():
     return Pipeline([('hour_onehot', OneHotEncoder(drop='first', sparse=False))])
 
+
+def holiday_pipeline():
+    return Pipeline([('holiday_onehot', OneHotEncoder(drop='first', sparse=False))])
+
+
+def wind_pipeline():
+    return Pipeline([('wind_scaler', StandardScaler())])
+
+
+def month_pipeline():
+    return Pipeline([('month_onehot', OneHotEncoder(drop='first', sparse=False))])
+
+
+def day_pipeline():
+    return Pipeline([('day_onehot', OneHotEncoder(drop='first', sparse=False))])
+
+
+def humidity_pipeline():
+    return Pipeline([('humidity_scaler', StandardScaler())])
+
+def year_pipeline():
+    return Pipeline([('year_onehot', OneHotEncoder(drop='first', sparse=False))])
 
 
 def setup_col_transformer():
@@ -38,6 +63,13 @@ def setup_col_transformer():
     workday_pipe = workingday_pipeline()
     weather_pipe = weather_pipeline()
     temp_pipe = temp_pipeline()
+    atemp_pipe = atemp_pipeline()
+    holiday_pipe = holiday_pipeline()
+    wind_pipe = wind_pipeline()
+    month_pipe = month_pipeline()
+    day_pipe = day_pipeline()
+    year_pipe = year_pipeline()
+    humidity_pipe = humidity_pipeline()
 
     return ColumnTransformer([
         ('season_pipe', season_pipe, ['season']),
@@ -45,6 +77,13 @@ def setup_col_transformer():
         ('weather_pipe', weather_pipe, ['weather']),
         ('temp_pipe', temp_pipe, ['temp']),
         ('hour_pipe', hour_pipe, ['hour']),
+        #('atemp_pipe', atemp_pipe, ['atemp']),
+        ('holiday_pipe', holiday_pipe, ['holiday']),
+        ('wind_pipe', wind_pipe, ['windspeed']),
+        ('month_pipe', month_pipe, ['month']),
+        ('day_pipe', day_pipe, ['day']),
+        ('year_pipe', year_pipe, ['year']),
+        ('humidity_pipe', humidity_pipe, ['humidity'])
         ])
 
 
@@ -57,9 +96,10 @@ def rgr_pipe():
 
 def grid_parameters():
 
-    return {'ranfor_regression__n_estimators': [100],
-            'ranfor_regression__max_depth': [50, 60, 70],
-            #'ranfor_regression__min_samples_split': np.linspace(0.1, 1.0, 10),
+    return {'ranfor_regression__n_estimators': [400],
+            #'ranfor_regression__max_features': np.arange(5, 10),
+            #'ranfor_regression__min_samples_split': [5],
+            #'ranfor_regression__max_depth': [10],
             #'feature_engineering__temp_pipe__temp_diskretizer__n_bins': [4, 6, 8],
             }
 

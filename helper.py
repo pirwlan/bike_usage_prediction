@@ -9,6 +9,8 @@ def date_transforms(dfs: list):
 
         df['day'] = df['datetime'].dt.dayofweek
         df['hour'] = df['datetime'].dt.hour
+        df['month'] = df['datetime'].dt.month
+        df['year'] = df['datetime'].dt.year
         new_dfs.append(df)
     return new_dfs
 
@@ -29,7 +31,8 @@ def get_data():
     df_train, df_test = date_transforms([df_train, df_test])
 
     #y_train = np.log1p(y_train['count'])
-    y_train = y_train['count']
+    y_train = np.log1p(y_train)
+    #y_train = y_train['count']
     return df_train, y_train, df_test
 
 
@@ -61,5 +64,6 @@ def create_submission(best_model, df_test):
 
     y_hat = best_model.predict(df_test)
     df_submit = pd.read_csv(os.path.join(os.getcwd(), 'data', 'sampleSubmission.csv'))
+    y_hat = np.expm1(y_hat)
     df_submit['count'] = y_hat
     df_submit.to_csv(os.path.join(submit_path, 'submission.csv'), index=0)
