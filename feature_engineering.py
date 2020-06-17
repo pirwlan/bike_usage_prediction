@@ -1,5 +1,7 @@
+from sklearn.experimental import enable_hist_gradient_boosting
+
 from sklearn.compose import ColumnTransformer
-from sklearn.linear_model import PoissonRegressor
+from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.metrics import make_scorer, mean_squared_log_error
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures, StandardScaler
@@ -90,19 +92,20 @@ def setup_col_transformer():
 
 def rgr_pipe():
     col_trans = setup_col_transformer()
-    ranfor_reg = PoissonRegressor()
+    ranfor_reg = HistGradientBoostingRegressor()
     return Pipeline([('feature_engineering', col_trans),
-                     ('polynominal', PolynomialFeatures()),
+                     # ('polynominal', PolynomialFeatures()),
                      ('ranfor_regression', ranfor_reg)])
 
 
 def grid_parameters():
 
-    return {'ranfor_regression__alpha': np.arange(0, 4),
-            'ranfor_regression__max_iter': [200, 400],
+    return {'ranfor_regression__loss': ['poisson'],
+            'ranfor_regression__l2_regularization': np.linspace(0, 1, 5),
+            'ranfor_regression__learning_rate': np.linspace(0.1, 0.5, 4),
             #'ranfor_regression__max_features': np.arange(5, 10),
             #'ranfor_regression__min_samples_split': [5],
-            #'ranfor_regression__max_depth': [10],
+            'ranfor_regression__max_depth': [50, 75, 100],
             #'feature_engineering__temp_pipe__temp_diskretizer__n_bins': [4, 6, 8],
             }
 
@@ -116,4 +119,3 @@ def RMSLE(y_true, y_predict):
     Implentation of Root mean squared log error
     """
     return np.sqrt(mean_squared_log_error(y_true, y_predict))
-
