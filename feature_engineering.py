@@ -52,8 +52,9 @@ def day_pipeline():
 def humidity_pipeline():
     return Pipeline([('humidity_scaler', StandardScaler())])
 
+
 def year_pipeline():
-    return Pipeline([('year_onehot', OneHotEncoder(drop='first', sparse=False))])
+    return Pipeline([('year_onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))])
 
 
 def setup_col_transformer():
