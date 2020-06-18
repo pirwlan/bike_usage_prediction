@@ -1,7 +1,5 @@
-from sklearn.experimental import enable_hist_gradient_boosting
-
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import HistGradientBoostingRegressor
+from sklearn.linear_model import PoissonRegressor
 from sklearn.metrics import make_scorer, mean_squared_log_error
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures, StandardScaler
@@ -23,8 +21,6 @@ def weather_pipeline():
 
 def temp_pipeline():
     return Pipeline([('temp_scaler', StandardScaler())])
-                      #KBinsDiscretizer(encode='onehot',
-                      #                                     strategy='uniform'))])
 
 
 def atemp_pipeline():
@@ -66,7 +62,6 @@ def setup_col_transformer():
     workday_pipe = workingday_pipeline()
     weather_pipe = weather_pipeline()
     temp_pipe = temp_pipeline()
-    atemp_pipe = atemp_pipeline()
     holiday_pipe = holiday_pipeline()
     wind_pipe = wind_pipeline()
     month_pipe = month_pipeline()
@@ -75,38 +70,32 @@ def setup_col_transformer():
     humidity_pipe = humidity_pipeline()
 
     return ColumnTransformer([
-        ('season_pipe', season_pipe, ['season']),
-        ('workday_pipe', workday_pipe, ['workingday']),
-        ('weather_pipe', weather_pipe, ['weather']),
-        ('temp_pipe', temp_pipe, ['temp']),
-        ('hour_pipe', hour_pipe, ['hour']),
-        #('atemp_pipe', atemp_pipe, ['atemp']),
-        ('holiday_pipe', holiday_pipe, ['holiday']),
-        ('wind_pipe', wind_pipe, ['windspeed']),
-        ('month_pipe', month_pipe, ['month']),
-        ('day_pipe', day_pipe, ['day']),
-        ('year_pipe', year_pipe, ['year']),
-        ('humidity_pipe', humidity_pipe, ['humidity'])
-        ])
+            ('season_pipe', season_pipe, ['season']),
+            ('workday_pipe', workday_pipe, ['workingday']),
+            ('weather_pipe', weather_pipe, ['weather']),
+            ('temp_pipe', temp_pipe, ['temp']),
+            ('hour_pipe', hour_pipe, ['hour']),
+            ('holiday_pipe', holiday_pipe, ['holiday']),
+            ('wind_pipe', wind_pipe, ['windspeed']),
+            ('month_pipe', month_pipe, ['month']),
+            ('day_pipe', day_pipe, ['day']),
+            ('year_pipe', year_pipe, ['year']),
+            ('humidity_pipe', humidity_pipe, ['humidity'])
+            ])
 
 
 def rgr_pipe():
     col_trans = setup_col_transformer()
-    ranfor_reg = HistGradientBoostingRegressor()
+    regressor = PoissonRegressor(verbose=-1)
     return Pipeline([('feature_engineering', col_trans),
-                     # ('polynominal', PolynomialFeatures()),
-                     ('ranfor_regression', ranfor_reg)])
+                     ('polynominal', PolynomialFeatures(degree=2)),
+                     ('poireg_regression', regressor)])
 
 
 def grid_parameters():
 
-    return {'ranfor_regression__loss': ['poisson'],
-            'ranfor_regression__l2_regularization': np.linspace(0, 1, 5),
-            'ranfor_regression__learning_rate': np.linspace(0.1, 0.5, 4),
-            #'ranfor_regression__max_features': np.arange(5, 10),
-            #'ranfor_regression__min_samples_split': [5],
-            'ranfor_regression__max_depth': [50, 75, 100],
-            #'feature_engineering__temp_pipe__temp_diskretizer__n_bins': [4, 6, 8],
+    return {'poireg_regression__alpha': [0, 0.1, 1, 10],
+            'poireg_regression__max_iter': [100, 200, 300, 400, 500],
             }
 
 

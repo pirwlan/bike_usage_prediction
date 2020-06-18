@@ -277,7 +277,7 @@ atlassian-ide-plugin.xml
 *.xls#
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
+com_crashlytics_export_strings.xmletup
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
@@ -286,3 +286,6 @@ fabric.properties
 data_big/
 data_big/*
 BigData.ipynb
+
+submission/
+submission/*
