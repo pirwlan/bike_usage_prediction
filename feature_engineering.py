@@ -95,7 +95,7 @@ def rgr_pipe():
 def grid_parameters():
 
     return {'poireg_regression__alpha': [0, 0.1, 1, 10],
-            'poireg_regression__max_iter': [100, 200, 300, 400, 500],
+            'poireg_regression__max_iter': [500],
             }
 
 
