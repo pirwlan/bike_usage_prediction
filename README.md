@@ -1,7 +1,9 @@
 # Predicting bike sharing demand
 
-This is my approach to a simple Regression problem presentend in a Kaggle competition. Here, the use case is the prediction of the number of rented bikes per hour. 
+A couple years ago, Kaggle posted a [competition](https://www.kaggle.com/c/bike-sharing-demand/overview/description "Link to Kaggle competition"), in which the participants were supposed to predict the number of total bike rentals at given time points in Washington DC. The rental count were further distinguished in registered and casual lenders. 
 
-Using a rather simple and robust solution, based on a Poisson regressor, I could reach the top 5 % in the competition. 
+I approached the problem by predicting both, registered and casual lenders separately, which significantly improved performance. 
 
-Kaggle competition https://www.kaggle.com/c/bike-sharing-demand/overview/description
+Using a rather simple and robust solution, on the newly implement PoissonRegressor, I could reach the top 5 % in the competition. 
+
+The data was provided by [Capital Bikeshare](https://www.capitalbikeshare.com/system-data)
